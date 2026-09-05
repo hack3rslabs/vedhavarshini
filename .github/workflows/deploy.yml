@@ -18,9 +18,9 @@ jobs:
     - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        server: "ftp.vedhavarshini.com"
+        username: "vvftp@vedhavarshini.com"
+        password: "pG{^P+Mr[=@WJ$%3"
         # BigRock typically uses public_html for the main site root
         server-dir: /public_html/
         exclude: |
