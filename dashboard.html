@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | Vedha Varshini Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background-color: #FAFAF5; }
+        .dashboard-container { max-width: 900px; margin: 40px auto; padding: 30px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .subscription-card { border: 1px solid #eee; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .status-active { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="color: #106B33;">My Dashboard</h1>
+            <a href="login.html" class="btn btn-outline">Logout</a>
+        </div>
+        
+        <h3 id="welcomeMessage">Your Current Subscription</h3>
+        <div class="subscription-card" id="subCard">
+            <h2 id="planName">Premium Plan</h2>
+            <p>Status: <span class="status-active" id="planStatus">ACTIVE</span></p>
+            <p>Start Date: <strong id="startDate">2026-07-01</strong></p>
+            <p>End Date: <strong id="endDate">2026-12-31</strong></p>
+        </div>
+        
+        <p style="margin-top: 30px; color: #666;">Note: This is the simulated LocalStorage version of the dashboard.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${currentUser.name}!`;
+
+            if (currentUser.plan && currentUser.plan !== 'None') {
+                document.getElementById('planName').textContent = currentUser.plan;
+                document.getElementById('planStatus').textContent = currentUser.status;
+                document.getElementById('startDate').textContent = '-';
+                document.getElementById('endDate').textContent = currentUser.expiryDate;
+            } else {
+                document.getElementById('subCard').innerHTML = `
+                    <h2>No Active Plan</h2>
+                    <p>You have not subscribed to any plan yet.</p>
+                    <a href="index.html#subscriptions" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">View Plans</a>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

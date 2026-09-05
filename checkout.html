@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Vedha Varshini Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-layout" style="background-color: #FAFAF5;">
+    <div class="auth-form-side" style="width: 100%; max-width: 600px; margin: 40px auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative;">
+        <a href="index.html" class="btn btn-outline" style="position: absolute; top: 20px; left: 20px; padding: 8px 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home
+        </a>
+        <div class="auth-form-container" style="padding-top: 60px;">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="logo.png" alt="Vedha Varshini Wellness Logo" style="height: 70px; margin-bottom: 5px;">
+                <h3 style="color: var(--color-primary); font-family: var(--font-heading);">Complete Your Subscription</h3>
+                <p id="selectedPlanText" style="color: var(--color-secondary); font-weight: 600; margin-top: 5px;">Selected Plan: </p>
+            </div>
+
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" required placeholder="Enter your full name">
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" required placeholder="Email">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="phone">Mobile Number</label>
+                        <input type="tel" id="phone" required placeholder="Mobile Number">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" required placeholder="Your Age" min="10" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <textarea id="address" rows="3" required placeholder="Complete delivery address..." style="width: 100%; padding: 12px; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; background: #FAFAF5; font-family: inherit; resize: vertical;"></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary w-full" style="margin-top: 10px; padding: 14px;">Confirm & Send Details</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const plan = urlParams.get('plan') || 'Basic Plan';
+            document.getElementById('selectedPlanText').textContent = `Selected Plan: ${plan}`;
+
+            document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('submitBtn');
+                btn.textContent = 'Processing...';
+                btn.disabled = true;
+
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const age = document.getElementById('age').value;
+                const address = document.getElementById('address').value;
+
+                setTimeout(() => {
+                    // Save to localStorage so admin can see
+                    let users = JSON.parse(localStorage.getItem('users')) || [];
+                    const newUser = {
+                        id: Date.now(),
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        age: age,
+                        address: address,
+                        role: 'user',
+                        status: 'PENDING',
+                        plan: plan,
+                        expiryDate: '-'
+                    };
+                    users.push(newUser);
+                    localStorage.setItem('users', JSON.stringify(users));
+
+                    // Generate mailto link
+                    const subject = encodeURIComponent(`New Subscription Request: ${plan} - ${name}`);
+                    const body = encodeURIComponent(`Hello Vedha Varshini Wellness,\n\nI would like to subscribe to the ${plan}.\n\nHere are my details:\nName: ${name}\nEmail: ${email}\nMobile: ${phone}\nAge: ${age}\nDelivery Address: ${address}\n\nPlease contact me for the next steps.\n\nThank you.`);
+                    
+                    window.location.href = `mailto:support@vedhavarshini.com?subject=${subject}&body=${body}`;
+
+                    alert("Subscription details saved! Opening your email app to send details to support.");
+                    
+                    btn.textContent = 'Confirm & Send Details';
+                    btn.disabled = false;
+                    document.getElementById('checkoutForm').reset();
+                }, 800);
+            });
+        });
+    </script>
+</body>
+</html>

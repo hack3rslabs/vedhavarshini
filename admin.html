@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Vedha Varshini Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background-color: #f4f7f6; }
+        .admin-container { max-width: 1200px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #f9f9f9; color: #555; font-weight: 600; }
+        .alert-box { background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffeeba; }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="color: #106B33;">Admin Dashboard (Static View)</h1>
+            <a href="login.html" class="btn btn-outline">Logout</a>
+        </div>
+        
+        <div id="alertsContainer" style="margin-top: 30px;">
+            <h3>Needs Attention</h3>
+            <div class="alert-box">
+                <strong>Warning:</strong> John Doe's Premium Plan is expiring in 2 days! (2026-08-15)
+            </div>
+        </div>
+
+        <h3 style="margin-top: 40px;">All Subscribers</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Expiry Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+
+        <!-- Manage Plans Section -->
+        <hr style="margin: 50px 0; border: none; border-top: 1px solid #ddd;">
+        
+        <h3 style="color: #106B33;">Manage Subscription Plans</h3>
+        
+        <div style="background: #FAFAF5; padding: 20px; border-radius: 8px; margin-top: 20px; border: 1px solid #eee;">
+            <h4>Create New Plan</h4>
+            <form id="createPlanForm" style="display: flex; gap: 15px; align-items: flex-end; margin-top: 15px; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 200px;">
+                    <label>Plan Name</label>
+                    <input type="text" id="newPlanName" required placeholder="e.g. Basic Plan" style="width: 100%; padding: 10px;">
+                </div>
+                <div class="form-group" style="flex: 1; min-width: 150px;">
+                    <label>Price (₹)</label>
+                    <input type="number" id="newPlanPrice" required placeholder="1999" style="width: 100%; padding: 10px;">
+                </div>
+                <div class="form-group" style="flex: 2; min-width: 250px;">
+                    <label>Features (comma separated)</label>
+                    <input type="text" id="newPlanFeatures" required placeholder="Feature 1, Feature 2" style="width: 100%; padding: 10px;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="padding: 10px 20px;">Save Plan</button>
+            </form>
+        </div>
+
+        <table style="margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Plan Name</th>
+                    <th>Price</th>
+                    <th>Features</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="plansTableBody">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Protect admin route
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!currentUser || currentUser.role !== 'admin') {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const tbody = document.getElementById('usersTableBody');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No users registered yet.</td></tr>';
+                return;
+            }
+
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.plan}</td>
+                    <td style="color: ${user.status === 'ACTIVE' ? 'green' : 'orange'};">${user.status}</td>
+                    <td>${user.expiryDate}</td>
+                    <td><button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8rem;" onclick="alert('Static HTML view. Database disabled.')">Edit</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Initialize default plans if none exist
+            let plans = JSON.parse(localStorage.getItem('plans'));
+            if (!plans) {
+                plans = [
+                    { id: 1, name: 'Basic Plan', price: 1999, features: ['Basic preventive wellness.'], isPopular: false },
+                    { id: 2, name: 'Premium Plan', price: 3999, features: ['Advanced tracking and coaching.'], isPopular: true },
+                    { id: 3, name: 'Elite Plan', price: 5999, features: ['Full access and personalized meal plans.'], isPopular: false }
+                ];
+                localStorage.setItem('plans', JSON.stringify(plans));
+            }
+
+            // Render Plans
+            const plansTbody = document.getElementById('plansTableBody');
+            const renderPlans = () => {
+                plansTbody.innerHTML = '';
+                let currentPlans = JSON.parse(localStorage.getItem('plans')) || [];
+                currentPlans.forEach(plan => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${plan.name}</strong> ${plan.isPopular ? '<span style="color:orange; font-size:0.8rem;">(Popular)</span>' : ''}</td>
+                        <td>₹${plan.price}/mo</td>
+                        <td><small>${plan.features.join(', ')}</small></td>
+                        <td><button class="btn btn-outline delete-plan-btn" data-id="${plan.id}" style="padding: 5px 10px; font-size: 0.8rem; border-color: red; color: red;">Delete</button></td>
+                    `;
+                    plansTbody.appendChild(tr);
+                });
+
+                // Attach delete events
+                document.querySelectorAll('.delete-plan-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(e.target.getAttribute('data-id'));
+                        let updatedPlans = currentPlans.filter(p => p.id !== id);
+                        localStorage.setItem('plans', JSON.stringify(updatedPlans));
+                        renderPlans();
+                    });
+                });
+            };
+            renderPlans();
+
+            // Create new plan
+            document.getElementById('createPlanForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                let currentPlans = JSON.parse(localStorage.getItem('plans')) || [];
+                const newPlan = {
+                    id: Date.now(),
+                    name: document.getElementById('newPlanName').value,
+                    price: document.getElementById('newPlanPrice').value,
+                    features: document.getElementById('newPlanFeatures').value.split(',').map(f => f.trim()),
+                    isPopular: false
+                };
+                currentPlans.push(newPlan);
+                localStorage.setItem('plans', JSON.stringify(currentPlans));
+                renderPlans();
+                e.target.reset();
+            });
+
+        });
+    </script>
+</body>
+</html>

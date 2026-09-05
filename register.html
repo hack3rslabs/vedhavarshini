@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Vedha Varshini Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-layout">
+    <div class="auth-visual">
+        <div class="auth-visual-content">
+            <h2>Start Your Journey</h2>
+            <p>Join thousands of members who have transformed their health with our science-backed preventive wellness programs.</p>
+        </div>
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-form-container">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="logo.png" alt="Vedha Varshini Wellness Logo" style="height: 70px; margin-bottom: 5px;">
+                <h3 style="color: var(--color-text);">Create your account</h3>
+            </div>
+
+            <div id="errorMsg" class="error-msg"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                </div>
+                <button type="submit" class="btn btn-primary w-full" style="margin-top: 10px; padding: 14px;">Create Account</button>
+            </form>
+
+            <p style="margin-top: 25px; text-align: center; font-size: 0.95rem; color: var(--color-text-light);">
+                Already have an account? <a href="login.html" style="color: var(--color-primary); font-weight: 600;">Log in here</a>
+            </p>
+            <p style="margin-top: 10px; text-align: center; font-size: 0.9rem;">
+                <a href="index.html" style="color: #999;">&larr; Back to Homepage</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.querySelector('button[type="submit"]');
+            
+            btn.textContent = 'Creating Account...';
+            btn.disabled = true;
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            // LocalStorage Backend Simulation
+            setTimeout(() => {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                
+                // Check if user already exists
+                const existingUser = users.find(u => u.email === email);
+                if (existingUser) {
+                    alert("Email already registered!");
+                    btn.textContent = 'Create Account';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Create new user object
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    password: password, // Note: In a real app, NEVER store plaintext passwords.
+                    role: 'user',
+                    status: 'PENDING',
+                    plan: 'None',
+                    expiryDate: '-'
+                };
+
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+
+                alert("Account created successfully!");
+                window.location.href = 'login.html';
+            }, 800);
+        });
+    </script>
+</body>
+</html>

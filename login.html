@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Vedha Varshini Wellness</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="auth-layout">
+    <div class="auth-visual">
+        <div class="auth-visual-content">
+            <h2>Welcome Back</h2>
+            <p>Access your personalized wellness journey, track your progress, and unlock exclusive nutritional insights.</p>
+        </div>
+    </div>
+    <div class="auth-form-side" style="position: relative;">
+        <a href="index.html" class="btn btn-outline" style="position: absolute; top: 20px; left: 20px; padding: 8px 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Home
+        </a>
+        <div class="auth-form-container">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="logo.png" alt="Vedha Varshini Wellness Logo" style="height: 70px; margin-bottom: 5px;">
+                <h3 style="color: var(--color-text);">Login to your account</h3>
+            </div>
+
+            <div id="errorMsg" class="error-msg"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn btn-primary w-full" style="margin-top: 10px; padding: 14px;">Secure Login</button>
+            </form>
+
+            <p style="margin-top: 25px; text-align: center; font-size: 0.95rem; color: var(--color-text-light);">
+                Don't have an account? <a href="register.html" style="color: var(--color-primary); font-weight: 600;">Sign up here</a>
+            </p>
+            <p style="margin-top: 10px; text-align: center; font-size: 0.9rem;">
+                <a href="index.html" style="color: #999;">&larr; Back to Homepage</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const btn = document.querySelector('button[type="submit"]');
+            
+            btn.textContent = 'Authenticating...';
+            btn.disabled = true;
+            
+            // LocalStorage Backend Simulation
+            setTimeout(() => {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+
+                if (email === 'admin@vedhavarshini.com' && password === 'admin123') {
+                    // Log in as Admin
+                    sessionStorage.setItem('currentUser', JSON.stringify({role: 'admin', name: 'Admin'}));
+                    window.location.href = 'admin.html';
+                } else {
+                    // Check against registered users
+                    const matchedUser = users.find(u => u.email === email && u.password === password);
+                    
+                    if (matchedUser) {
+                        sessionStorage.setItem('currentUser', JSON.stringify(matchedUser));
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        errorMsg.textContent = 'Invalid credentials';
+                        errorMsg.style.display = 'block';
+                        btn.textContent = 'Secure Login';
+                        btn.disabled = false;
+                    }
+                }
+            }, 800);
+        });
+    </script>
+</body>
+</html>

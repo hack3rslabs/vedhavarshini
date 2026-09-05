@@ -1,0 +1,48 @@
+name: Deploy to BigRock
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  web-deploy:
+    name: Deploy to BigRock FTP
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        # BigRock typically uses public_html for the main site root
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/.github/**
+          **/node_modules/**
+
+  verify-deployment:
+    name: Post-Deployment Verification
+    needs: web-deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Wait for server cache
+      run: sleep 10
+      
+    - name: Check Live Site Status
+      run: |
+        HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" https://vedhavarshini.com/)
+        if [ "$HTTP_STATUS" -ne 200 ]; then
+          echo "Deployment verification failed. HTTP Status: $HTTP_STATUS"
+          exit 1
+        else
+          echo "Deployment successful! Live site returned HTTP 200 OK."
+        fi
