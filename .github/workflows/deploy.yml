@@ -20,8 +20,8 @@ jobs:
     - name: FTP Deploy
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: "ftp.vedhavarshini.com"
-        username: "vvftp@vedhavarshini.com"
+        server: "${{ secrets.FTP_SERVER }}"
+        username: "${{ secrets.FTP_USERNAME }}"
         password: "${{ secrets.FTP_PASSWORD }}"
         # Since vvftp root is now public_html, we deploy directly to the current directory
         server-dir: ./
