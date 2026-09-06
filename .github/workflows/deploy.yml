@@ -22,7 +22,7 @@ jobs:
       with:
         server: "ftp.vedhavarshini.com"
         username: "vvftp@vedhavarshini.com"
-        password: "pG{^P+Mr[=@WJ$%3"
+        password: ""
         # BigRock typically uses public_html for the main site root
         server-dir: /public_html/
         exclude: |
