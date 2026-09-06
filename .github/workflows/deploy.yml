@@ -22,7 +22,7 @@ jobs:
       with:
         server: "ftp.vedhavarshini.com"
         username: "vvftp@vedhavarshini.com"
-        password: ""
+        password: "${{ secrets.FTP_PASSWORD }}"
         # Since vvftp root is now public_html, we deploy directly to the current directory
         server-dir: ./
         exclude: |
