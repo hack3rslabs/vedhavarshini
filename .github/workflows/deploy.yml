@@ -23,8 +23,8 @@ jobs:
         server: "ftp.vedhavarshini.com"
         username: "vvftp@vedhavarshini.com"
         password: ""
-        # BigRock typically uses public_html for the main site root
-        server-dir: /public_html/
+        # Since vvftp root is now public_html, we deploy directly to the current directory
+        server-dir: ./
         exclude: |
           **/.git*
           **/.git*/**
