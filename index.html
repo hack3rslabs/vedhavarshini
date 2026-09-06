@@ -382,11 +382,13 @@
         <div class="modal-content">
             <span class="modal-close" id="closeModal">&times;</span>
             <h3 style="color: var(--color-primary); margin-bottom: 10px;">Get a Free Diet Plan Guide!</h3>
-            <p style="margin-bottom: 20px; color: #555;">Drop your mobile number to receive our exclusive preventive health tips.</p>
-            <form style="display:flex; flex-direction:column; gap:10px;">
-                <input type="tel" placeholder="Your Mobile Number" pattern="[0-9]{10}" required style="padding:12px; border:1px solid #ccc; border-radius:8px;">
-                <button type="submit" class="btn btn-primary w-full">Send it to me</button>
+            <p id="leadDesc" style="margin-bottom: 20px; color: #555;">Drop your mobile number to receive our exclusive preventive health tips.</p>
+            <form id="leadCaptureForm" style="display:flex; flex-direction:column; gap:10px;">
+                <input type="tel" id="leadMobile" placeholder="Your Mobile Number" pattern="[0-9]{10}" required style="padding:12px; border:1px solid #ccc; border-radius:8px;">
+                <button type="submit" id="leadSubmitBtn" class="btn btn-primary w-full">Send it to me</button>
             </form>
+            <p id="leadSuccessMsg" style="display:none; color: var(--color-primary); font-weight: 600; text-align: center; margin-top: 15px;">Thank you! We'll send your guide shortly.</p>
+            <p id="leadErrorMsg" style="display:none; color: red; font-weight: 500; text-align: center; margin-top: 15px;">Oops, something went wrong. Please try again.</p>
         </div>
     </div>
     <script src="script.js"></script>

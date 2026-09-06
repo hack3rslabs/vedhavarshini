@@ -71,6 +71,46 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById("closeModal").addEventListener("click", () => {
             modal.classList.remove("active");
         });
+
+        // Lead Capture Form Submission
+        const leadForm = document.getElementById("leadCaptureForm");
+        if (leadForm) {
+            leadForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById("leadSubmitBtn");
+                const mobile = document.getElementById("leadMobile").value;
+                const successMsg = document.getElementById("leadSuccessMsg");
+                const errorMsg = document.getElementById("leadErrorMsg");
+                const desc = document.getElementById("leadDesc");
+
+                btn.disabled = true;
+                btn.innerText = "Sending...";
+                errorMsg.style.display = "none";
+
+                try {
+                    const response = await fetch("send_lead.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ mobile: mobile })
+                    });
+
+                    if (response.ok) {
+                        leadForm.style.display = "none";
+                        desc.style.display = "none";
+                        successMsg.style.display = "block";
+                        setTimeout(() => {
+                            modal.classList.remove("active");
+                        }, 3000);
+                    } else {
+                        throw new Error("Failed to send");
+                    }
+                } catch (err) {
+                    errorMsg.style.display = "block";
+                    btn.disabled = false;
+                    btn.innerText = "Send it to me";
+                }
+            });
+        }
     }
 
     // --- Quiz Logic ---
