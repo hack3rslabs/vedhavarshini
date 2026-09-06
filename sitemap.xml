@@ -17,12 +17,12 @@
       <priority>0.8</priority>
    </url>
    <url>
-      <loc>https://vedhavarshini.com/privacy-policy.html</loc>
+      <loc>https://vedhavarshini.com/help/privacy-policy.html</loc>
       <changefreq>yearly</changefreq>
       <priority>0.5</priority>
    </url>
    <url>
-      <loc>https://vedhavarshini.com/terms.html</loc>
+      <loc>https://vedhavarshini.com/help/terms.html</loc>
       <changefreq>yearly</changefreq>
       <priority>0.5</priority>
    </url>
